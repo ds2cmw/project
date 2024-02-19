@@ -12,9 +12,23 @@ dotenv.config();
 
 // Express 애플리케이션을 생성합니다.
 const app = express();
+// passport 설정을 담고 있는 모듈을 가져오기
+const passportConfig = require('./passport');
+// 함수 호출 하고 passport 설정을 초기화하고 local strategy 인증 구성 초기화
+passportConfig();
 
 // 포트 설정
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3888);
+// 모델즈 파일에 sequelize 객체를 가져와서 데이터베이스와 연결
+const { sequelize } = require('./models');
+// sequelize 객체의 sync 메서드를 호출 하고 데이터베이스에 없으면 태이블 생성 있으면 변경 하지 않는다.
+sequelize.sync({ force : false })
+.then(() => {
+    console.log('데이터베이스 연결 성공');
+})
+.catch ((err) => {
+    console.error(err);
+})
 
 // 미들웨어 설정
 app.use(morgan('dev')); // 개발 환경에서의 HTTP 요청 로깅
@@ -35,6 +49,14 @@ app.use(session({
 }));
 app.use(passport.initialize()); // 패스포트 초기화
 app.use(passport.session());  // 패스포트 세션 사용
+
+// /auth 라우터는 auth.js 파일로 관리
+const authRouter = require('./routes/auth');
+// /comment 라우터는 comment.js 파일로 관리
+const commentRouter = require('./routes/comment');
+
+app.use('/auth', authRouter);
+app.use('/', commentRouter);
 
 // 라우터가 없는 경우 404 오류를 처리하는 미들웨어
 app.use((req, res, next) => {
