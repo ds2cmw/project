@@ -4,22 +4,27 @@ class Post extends Sequelize.Model {
     static initiate(sequelize) {
         // 게시판 테이블 기본 생성
         Post.init({
+            // 컨텐츠
             content : {
                 type : Sequelize.STRING(200),
                 allowNull : false
             },
+            // 이미지
             img : {
                 type : Sequelize.STRING(200),
                 allowNull : true
             },
+            // 제목
             title : {
                 type : Sequelize.STRING(20),
                 allowNull : false
             },
+            // 지역 정보
             local_information : {
                 type : Sequelize.STRING(30),
                 allowNull : false
             },
+            // 테그
             tag : {
                 type : Sequelize.STRING(20),
                 allowNull : true

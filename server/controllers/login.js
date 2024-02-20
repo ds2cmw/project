@@ -2,10 +2,10 @@ const passport = require('passport');
 const bcrypt = require('bcrypt'); // 함호 해싱 함수를 제공하는 라이브러리
 const User = require('../models/user'); // 유저 모델은 가져오기
 
-exports.join = async (req, res, next) => {
-    const { email, nick, age, password } = req.body;
-    try {
-        const exUser = await User.findOne({ where : {email}});
+exports.join = async (req, res, next) => { // 회원가입 처리 
+    const { email, nick, age, password } = req.body; // body에서 이메일, 닉네임, 나이, 비밀번호 추출
+    try {  
+        const exUser = await User.findOne({ where : {email}}); // 이메일로 조회
         if (exUser) {
             return res.redirect(`/join?error = exist`)
         }

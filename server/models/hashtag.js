@@ -4,6 +4,7 @@ class Hashtag extends Sequelize.Model {
     static initiate(sequelize) {
         // 해시테그 테이블 기본 생성
         Hashtag.init ({
+            // 테그
             tag : {
                 type : Sequelize.STRING(200),
                 allowNull : false,

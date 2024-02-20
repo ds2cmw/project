@@ -1,28 +1,36 @@
-// 필요한 패키지들 가져오기
-const express = require('express'); // Express 웹 애플리케이션을 만들기 위한 패키지
-const cookieParser = require('cookie-parser'); // 쿠키를 파싱하기 위한 패키지
-const morgan = require('morgan'); // HTTP 요청 로깅을 위한 패키지
-const path = require('path'); // 파일 경로를 조작하기 위한 패키지
-const session = require('express-session'); // 세션 관리를 위한 패키지
-const dotenv = require('dotenv'); // 환경 변수를 로드하기 위한 패키지
-const passport = require('passport'); // 사용자 인증을 처리하기 위한 패키지
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+const path = require('path'); 
+const session = require('express-session');
+const dotenv = require('dotenv');
+const passport = require('passport');
+const nunjucks = require('nunjucks'); 
 
 // .env 파일에서 환경 변수를 로드합니다.
 dotenv.config();
 
-// Express 애플리케이션을 생성합니다.
 const app = express();
+
+const { sequelize } = require('./models');
+
+const loginRouter = require('./routes/login');
+const commentRouter = require('./routes/comment');
+
 // passport 설정을 담고 있는 모듈을 가져오기
 const passportConfig = require('./passport');
 // 함수 호출 하고 passport 설정을 초기화하고 local strategy 인증 구성 초기화
 passportConfig();
 
-// 포트 설정
+
 app.set('port', process.env.PORT || 3888);
-// 모델즈 파일에 sequelize 객체를 가져와서 데이터베이스와 연결
-const { sequelize } = require('./models');
-// sequelize 객체의 sync 메서드를 호출 하고 데이터베이스에 없으면 태이블 생성 있으면 변경 하지 않는다.
-sequelize.sync({ force : false })
+app.set('view engine', 'html');
+nunjucks.configure('views', {
+    express: app,
+    watch: true,
+});
+
+sequelize.sync({ force: false })
 .then(() => {
     console.log('데이터베이스 연결 성공');
 })
@@ -50,12 +58,7 @@ app.use(session({
 app.use(passport.initialize()); // 패스포트 초기화
 app.use(passport.session());  // 패스포트 세션 사용
 
-// /auth 라우터는 auth.js 파일로 관리
-const authRouter = require('./routes/auth');
-// /comment 라우터는 comment.js 파일로 관리
-const commentRouter = require('./routes/comment');
-
-app.use('/auth', authRouter);
+app.use('/login', loginRouter);
 app.use('/', commentRouter);
 
 // 라우터가 없는 경우 404 오류를 처리하는 미들웨어

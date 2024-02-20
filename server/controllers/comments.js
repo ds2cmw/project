@@ -1,7 +1,8 @@
-const { Comment } = require('../models/');
+const { Comment } = require('../models/'); // 모델 가져오기
 
 exports.createComment = async (req, res, next) => {
     try {
+        // 새 댓글을 생성
         const comment = await Comment.create({
             commenter: req.body.id,
             comment: req.body.comment,
