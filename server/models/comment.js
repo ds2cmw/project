@@ -26,7 +26,8 @@ class Comment extends Sequelize.Model { //Comment 클래스를 Sequelize 의 Mod
         });
     }
     static associate(db) {
-        db.Comment.belongsTo(db.User, { foreignKey: 'comment', targetKey: 'id' });
+        db.Comment.belongsTo(db.User, { foreignKey: 'commenter', targetKey: 'id' });
+        // 1:N
     }
 };
 

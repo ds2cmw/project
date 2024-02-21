@@ -1,5 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+// passport-local 모듈의 전략 생성자를 가져옴
 const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
@@ -29,5 +30,5 @@ module.exports = () => { // 이 모듈을 내보냅니다.
             console.error(error);
             done(err);
         }
-    }))
-}
+    }));
+};

@@ -13,9 +13,10 @@ dotenv.config();
 const app = express();
 
 const { sequelize } = require('./models');
-
-const loginRouter = require('./routes/login');
+const pageRoutrt = require('./routes/page')
+const loginRouter = require('./routes/auth');
 const commentRouter = require('./routes/comment');
+const postRouter = require('./routes/post');
 
 // passport 설정을 담고 있는 모듈을 가져오기
 const passportConfig = require('./passport');
@@ -59,7 +60,8 @@ app.use(passport.initialize()); // 패스포트 초기화
 app.use(passport.session());  // 패스포트 세션 사용
 
 app.use('/login', loginRouter);
-app.use('/', commentRouter);
+app.use('/comment', commentRouter);
+app.use('/post', postRouter);
 
 // 라우터가 없는 경우 404 오류를 처리하는 미들웨어
 app.use((req, res, next) => {

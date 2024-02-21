@@ -1,5 +1,7 @@
-const passport = require('passport'); 
-const bcrypt = require('bcrypt'); // 함호 해싱 함수를 제공하는 라이브러리
+const express = require('express');
+const passport = require('passport');
+const bcrypt = require('bcrypt'); // 함호 해싱 함수
+
 const User = require('../models/user'); // 유저 모델은 가져오기
 
 exports.join = async (req, res, next) => { // 회원가입 처리 
@@ -48,6 +50,8 @@ exports.login = (req, res, next) => {
 
 exports.logout = (req, res) => {
     req.logout(() => {
-        res.redirect('/')
-    })
+        req.session.destroy();
+        res.redirect('/');
+    });
 }
+    

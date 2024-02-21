@@ -6,9 +6,8 @@ class User extends Sequelize.Model { // User 클래스를 Sequelize 의 Model �
         User.init ({
             // 닉네임
             nick : {
-                type : Sequelize.STRING(20),
+                type : Sequelize.STRING(15),
                 allowNull : false,
-                unique : true
             },
             // 나이
             age : {
@@ -38,10 +37,11 @@ class User extends Sequelize.Model { // User 클래스를 Sequelize 의 Model �
         });
     }
     static associate(db) { // 모델 간 관계 설정
-        db.User.hasMany(db.Comment, { foreignKey: 'comment', sourceKey: 'id' });
-        db.User.hasMany(db.Post, { foreignKey: 'post', sourceKey: 'id' })
-        db.User.hasMany(db.Hashtag, { foreignKey: 'hashtag', sourceKey: 'id' })
-    };
+        db.User.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' });
+        // 1:N
+        db.User.hasMany(db.Post);
+        // N:N
+    }
 };
 
 module.exports = User;

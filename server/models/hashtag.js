@@ -6,10 +6,11 @@ class Hashtag extends Sequelize.Model {
         Hashtag.init ({
             // 테그
             tag : {
-                type : Sequelize.STRING(200),
+                type : Sequelize.STRING(15),
                 allowNull : false,
                 unique : true
-            }
+            },
+
         }, {
             sequelize,
             timestamps : true,
@@ -23,6 +24,7 @@ class Hashtag extends Sequelize.Model {
     }
     static associate(db) {
         db.Hashtag.belongsToMany(db.Post, { through : 'PostHashtag'})
+        // N:N
     }
 };
 
