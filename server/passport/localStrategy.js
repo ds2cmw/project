@@ -9,7 +9,6 @@ module.exports = () => { // 이 모듈을 내보냅니다.
     passport.use(new LocalStrategy({ // Passport에 새로운 LocalStrategy를 등록
         usernameField : 'email', // 사용자명 필드를 이메일로 설정
         passwordField : 'password', // 비밀번호 필드를 패스워드로 설정
-        passReqToCallback : false, // 요청 객체를 콜백 함수로 전달하지 않는다
     }, async(email, password, done) => { // 인증 처리를 위한 콜백 함수를 정의합니다.
         try {
             const exUser = await User.findOne({ where : {email}}); // 이메일로 사용자를 찾는다

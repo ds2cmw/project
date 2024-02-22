@@ -7,23 +7,16 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 const nunjucks = require('nunjucks'); 
 
-// .env 파일에서 환경 변수를 로드합니다.
-dotenv.config();
+dotenv.config(); // .env 파일에서 환경 변수를 로드합니다.
+const pageRouter = require('./routes/page');
+const authRouter = require('./routes/auth');
+const commentRouter = require('./routes/comment');
+const { sequelize }= require('./models');
+const passportConfig = require('./passport');
 
 const app = express();
-
-const { sequelize } = require('./models');
-const pageRoutrt = require('./routes/page')
-const loginRouter = require('./routes/auth');
-const commentRouter = require('./routes/comment');
-const postRouter = require('./routes/post');
-
-// passport 설정을 담고 있는 모듈을 가져오기
-const passportConfig = require('./passport');
-// 함수 호출 하고 passport 설정을 초기화하고 local strategy 인증 구성 초기화
 passportConfig();
-
-
+// 함수 호출 하고 passport 설정을 초기화하고 local strategy 인증 구성 초기화
 app.set('port', process.env.PORT || 3888);
 app.set('view engine', 'html');
 nunjucks.configure('views', {
@@ -32,12 +25,12 @@ nunjucks.configure('views', {
 });
 
 sequelize.sync({ force: false })
-.then(() => {
-    console.log('데이터베이스 연결 성공');
-})
-.catch ((err) => {
-    console.error(err);
-})
+    .then(() => {
+        console.log('데이터베이스 연결 성공');
+    })
+    .catch ((err) => {
+        console.error(err);
+    })
 
 // 미들웨어 설정
 app.use(morgan('dev')); // 개발 환경에서의 HTTP 요청 로깅
@@ -59,9 +52,10 @@ app.use(session({
 app.use(passport.initialize()); // 패스포트 초기화
 app.use(passport.session());  // 패스포트 세션 사용
 
-app.use('/login', loginRouter);
+// 라우터 연결
+app.use('/', pageRouter);
+app.use('/auth', authRouter);
 app.use('/comment', commentRouter);
-app.use('/post', postRouter);
 
 // 라우터가 없는 경우 404 오류를 처리하는 미들웨어
 app.use((req, res, next) => {
